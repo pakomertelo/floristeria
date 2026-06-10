@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+data/*.sqlite
+data/*.sqlite-*
+data/mail_outbox.log
+public/uploads/*
+!public/uploads/.gitkeep
+.DS_Store
