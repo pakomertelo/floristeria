@@ -43,6 +43,41 @@ Edita `.env` si quieres cambiar credenciales, puerto o configuración de correo.
 
 > Si no configuras `MAIL_HOST`, el formulario de contacto funciona en modo desarrollo y guarda los mensajes en `data/mail_outbox.log`.
 
+
+## Despliegue en Vercel
+
+El repositorio incluye `vercel.json` y una entrada serverless en `api/index.py`, por lo que Vercel puede desplegar la aplicación Python sin comando de build adicional.
+
+### Settings del proyecto en Vercel
+
+En **Project Settings → General** usa:
+
+| Setting | Valor |
+| --- | --- |
+| Framework Preset | `Other` |
+| Root Directory | `./` |
+| Build Command | vacío |
+| Output Directory | vacío |
+| Install Command | vacío o el valor por defecto de Vercel |
+| Development Command | vacío |
+
+En **Project Settings → Environment Variables** configura al menos:
+
+| Variable | Valor recomendado |
+| --- | --- |
+| `SESSION_SECRET` | Cadena larga, aleatoria y privada. |
+| `APP_URL` | URL pública del proyecto, por ejemplo `https://tu-proyecto.vercel.app`. |
+| `ADMIN_EMAIL` | Email del administrador inicial. |
+| `ADMIN_PASSWORD` | Contraseña inicial segura. |
+| `CONTACT_TO_EMAIL` | Email que recibirá los mensajes del formulario. |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_SECURE`, `MAIL_USER`, `MAIL_PASS`, `MAIL_FROM` | SMTP real si quieres envío de emails en producción. |
+
+Notas importantes sobre Vercel:
+
+- La base de datos SQLite se crea automáticamente en `/tmp/floristeria.sqlite` en funciones serverless. Es suficiente para demo, pero no es persistente entre redeploys o reinicios. Para producción real conviene migrar a una base de datos externa.
+- Las imágenes subidas desde el panel se guardan en `/tmp/uploads`, también almacenamiento efímero. Para producción real conviene usar almacenamiento externo de archivos.
+- Después de cambiar variables de entorno en Vercel, redeploya el proyecto.
+
 ## Arranque local
 
 ```bash
