@@ -1,0 +1,1 @@
+# Sin dependencias externas: la aplicación usa únicamente la biblioteca estándar de Python.
