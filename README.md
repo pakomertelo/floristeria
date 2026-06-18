@@ -46,7 +46,7 @@ Edita `.env` si quieres cambiar credenciales, puerto o configuración de correo.
 
 ## Despliegue en Vercel
 
-El repositorio incluye `vercel.json` y una entrada serverless en `api/index.py`, por lo que Vercel puede desplegar la aplicación Python sin comando de build adicional.
+El repositorio incluye una entrada WSGI serverless en `api/index.py` y `vercel.json` solo reescribe todas las rutas hacia esa función, siguiendo la detección automática del runtime Python de Vercel.
 
 ### Settings del proyecto en Vercel
 
@@ -56,10 +56,10 @@ En **Project Settings → General** usa:
 | --- | --- |
 | Framework Preset | `Other` |
 | Root Directory | `./` |
-| Build Command | vacío |
-| Output Directory | vacío |
+| Build Command | vacío / `None` |
+| Output Directory | vacío / `None` |
 | Install Command | vacío o el valor por defecto de Vercel |
-| Development Command | vacío |
+| Development Command | vacío / `None` |
 
 En **Project Settings → Environment Variables** configura al menos:
 
@@ -76,6 +76,7 @@ Notas importantes sobre Vercel:
 
 - La base de datos SQLite se crea automáticamente en `/tmp/floristeria.sqlite` en funciones serverless. Es suficiente para demo, pero no es persistente entre redeploys o reinicios. Para producción real conviene migrar a una base de datos externa.
 - Las imágenes subidas desde el panel se guardan en `/tmp/uploads`, también almacenamiento efímero. Para producción real conviene usar almacenamiento externo de archivos.
+- Si ves `404: NOT_FOUND` en la URL raíz, revisa que Vercel haya desplegado este commit y que el `Root Directory` apunte a la raíz del repositorio; `vercel.json` debe estar en esa raíz.
 - Después de cambiar variables de entorno en Vercel, redeploya el proyecto.
 
 ## Arranque local
