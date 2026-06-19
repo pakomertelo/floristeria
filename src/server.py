@@ -114,9 +114,14 @@ class App(BaseHTTPRequestHandler):
             traceback.print_exc(); self.error_page()
 
     def static(self, path):
-        rel = path.lstrip("/")
-        file = config.PUBLIC_DIR / rel
-        if not file.resolve().is_relative_to(config.PUBLIC_DIR.resolve()) or not file.exists(): return self.not_found()
+        if path.startswith("/uploads/"):
+            file = config.UPLOAD_DIR / path.removeprefix("/uploads/")
+            root = config.UPLOAD_DIR
+        else:
+            rel = path.lstrip("/")
+            file = config.PUBLIC_DIR / rel
+            root = config.PUBLIC_DIR
+        if not file.resolve().is_relative_to(root.resolve()) or not file.exists(): return self.not_found()
         data = file.read_bytes(); self.send_response(200); self.security_headers()
         self.send_header("Content-Type", mimetypes.guess_type(str(file))[0] or "application/octet-stream")
         self.send_header("Content-Length", str(len(data))); self.end_headers(); self.wfile.write(data)
