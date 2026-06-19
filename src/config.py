@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+IS_VERCEL = bool(os.getenv("VERCEL"))
 
 def load_env(path: Path | None = None) -> None:
     env_path = path or BASE_DIR / ".env"
@@ -19,7 +20,9 @@ load_env()
 
 PORT = int(os.getenv("PORT", "3000"))
 APP_URL = os.getenv("APP_URL", f"http://localhost:{PORT}")
-DATABASE_PATH = Path(os.getenv("DATABASE_PATH", str(BASE_DIR / "data" / "floristeria.sqlite")))
+DEFAULT_DATABASE_PATH = Path("/tmp/floristeria.sqlite") if IS_VERCEL else BASE_DIR / "data" / "floristeria.sqlite"
+DEFAULT_UPLOAD_DIR = Path("/tmp/uploads") if IS_VERCEL else BASE_DIR / "public" / "uploads"
+DATABASE_PATH = Path(os.getenv("DATABASE_PATH", str(DEFAULT_DATABASE_PATH)))
 SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-secret-change-me")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@milindojardin.local")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "Admin123!")
@@ -31,5 +34,5 @@ MAIL_USER = os.getenv("MAIL_USER", "")
 MAIL_PASS = os.getenv("MAIL_PASS", "")
 MAIL_FROM = os.getenv("MAIL_FROM", "Floristería Mi Lindo Jardín <no-reply@milindojardin.local>")
 MAX_IMAGE_BYTES = 2 * 1024 * 1024
-UPLOAD_DIR = BASE_DIR / "public" / "uploads"
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", str(DEFAULT_UPLOAD_DIR)))
 PUBLIC_DIR = BASE_DIR / "public"
